@@ -28,6 +28,9 @@
         <footbot_proximity implementation="default" show_rays="true"/>
         <footbot_light implementation="rot_z_only" show_rays="false"/>
         <footbot_motor_ground implementation="rot_z_only"/>
+        <colored_blob_omnidirectional_camera implementation="rot_z_only"
+                                             medium="leds"/>
+
       </sensors>
       <params>
         <rng seed="123"/>
@@ -122,7 +125,10 @@
         </distribution>
       </blocks>
       <nests>
-        <nest dims="1.0, 4.0" center="2, 3" />
+        <nest dims="1.0, 4.0"
+              center="2, 3"
+              light_height="5.0"
+              light_intensity="5.0"/>
         </nests>
     </arena_map>
   </loop_functions>
@@ -172,5 +178,6 @@
   <!-- * Media * -->
   <!-- ********* -->
   <media>
+    <led id="leds"/>
   </media>
 </argos-configuration>

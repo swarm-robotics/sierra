@@ -67,7 +67,8 @@ class ARGoSQTHeadlessRendering():
 
     def gen_tag_addlist(self) -> tp.List[XMLTagAddList]:
         if not self.tag_adds:
-            self.tag_adds = [XMLTagAddList(XMLTagAdd('./visualization',
+            self.tag_adds = [XMLTagAddList(XMLTagAdd('.', 'visualization', {}),
+                                           XMLTagAdd('./visualization',
                                                      'qt-opengl',
                                                      {'autoplay': "true"}
                                                      ),

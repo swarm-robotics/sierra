@@ -523,7 +523,7 @@ class CoreCmdline:
 
                                  - ``none`` - Only calculate and show raw mean on graphs.
 
-                                 - ``conf95`` - Calculate standard deviation of experimental distribution and show 95%
+                                 - ``conf95`` - Calculate standard deviation of experimental distribution and show 95%%
                                    confidence interval on relevant graphs.
 
                                  - ``bw`` - Calculate statistics necessary to show box and whisker plots around each

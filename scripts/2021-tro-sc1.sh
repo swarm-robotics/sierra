@@ -1,7 +1,7 @@
 #!/bin/bash -l
-#SBATCH --time=12:00:00
-#SBATCH --nodes 8
-#SBATCH --tasks-per-node=12
+#SBATCH --time=24:00:00
+#SBATCH --nodes 1
+#SBATCH --tasks-per-node=64
 #SBATCH --cpus-per-task=2
 #SBATCH --mem-per-cpu=2G
 #SBATCH --mail-type=ALL
@@ -60,12 +60,13 @@ SIERRA_BASE_CMD="python3 sierra.py \
                   --sierra-root=$OUTPUT_ROOT\
                   --template-input-file=$SIERRA_ROOT/templates/2021-tro-sc1.argos \
                   --n-sims=$NSIMS\
-                  --pipeline 1 2 3 4\
+                  --pipeline 1 2\
                   --exp-graphs=inter --project-no-yaml-LN\
                   --project=fordyca\
                   --dist-stats=conf95\
                   --exp-overwrite\
                   --models-disable\
+                  --with-robot-leds\
                   --log-level=DEBUG\
                   --no-verify-results
                   "
@@ -79,7 +80,7 @@ then
     TASK=${TASKS[$TASK_NUM]}
 
 
-    SIERRA_CMD="$SIERRA_BASE_CMD --hpc-env=slurm"
+    SIERRA_CMD="$SIERRA_BASE_CMD --hpc-env=slurm --exec-resume"
 
     echo "********************************************************************************\n"
     squeue -j $SLURM_JOB_ID[$SLURM_ARRAY_TASK_ID] -o "%.9i %.9P %.8j %.8u %.2t %.10M %.6D %S %e"

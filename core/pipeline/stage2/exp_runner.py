@@ -53,8 +53,13 @@ class BatchedExpRunner:
         self.criteria = criteria
 
         self.batch_exp_root = os.path.abspath(self.cmdopts['batch_input_root'])
+        self.batch_stat_root = os.path.abspath(self.cmdopts['batch_stat_root'])
+        self.batch_stat_exec_root = os.path.join(self.batch_stat_root, 'exec')
         self.exec_exp_range = self.cmdopts['exp_range']
+
         self.logger = logging.getLogger(__name__)
+
+        core.utils.dir_create_checked(self.batch_stat_exec_root, exist_ok=True)
 
     def __call__(self) -> None:
         """
@@ -79,6 +84,10 @@ class BatchedExpRunner:
         with_rendering = self.cmdopts['argos_rendering']
         n_jobs = self.cmdopts['exec_sims_per_node']
 
+        now = datetime.datetime.now()
+        exec_times_fpath = os.path.join(self.batch_stat_exec_root,
+                                        now.strftime("%Y-%m-%e-%H:%M"))
+
         s = "Running batched experiment in '%s': sims_per_exp=%s,threads_per_sim=%s,n_jobs=%s"
         self.logger.info(s, self.cmdopts['batch_root'], n_sims, n_threads_per_sim, n_jobs)
 
@@ -91,8 +100,8 @@ class BatchedExpRunner:
         core.hpc.EnvChecker()
 
         for exp in exp_to_run:
-            ExpRunner(exp, exp_all.index(exp), self.cmdopts['hpc_env'])(n_jobs,
-                                                                        exec_resume)
+            runner = ExpRunner(exp, exp_all.index(exp), self.cmdopts['hpc_env'], exec_times_fpath)
+            runner(n_jobs, exec_resume)
 
         # Cleanup Xvfb processes which were started in the background
         if with_rendering:
@@ -112,10 +121,15 @@ class ExpRunner:
 
     """
 
-    def __init__(self, exp_input_root: str, exp_num: int, hpc_env: str) -> None:
+    def __init__(self,
+                 exp_input_root: str,
+                 exp_num: int,
+                 hpc_env: str,
+                 exec_times_fpath: str) -> None:
         self.exp_input_root = os.path.abspath(exp_input_root)
         self.exp_num = exp_num
         self.hpc_env = hpc_env
+        self.exec_times_fpath = exec_times_fpath
         self.logger = logging.getLogger(__name__)
 
     def __call__(self, n_jobs: int, exec_resume: bool) -> None:
@@ -156,3 +170,6 @@ class ExpRunner:
         elapsed = int(time.time() - start)
         sec = datetime.timedelta(seconds=elapsed)
         self.logger.info('Exp%s elapsed time: %s', self.exp_num, str(sec))
+
+        with open(self.exec_times_fpath, 'a') as f:
+            f.write('exp' + str(self.exp_num) + ': ' + str(sec) + '\n')

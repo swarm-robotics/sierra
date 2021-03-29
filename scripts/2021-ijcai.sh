@@ -48,25 +48,26 @@ OMP_SCHEDULE --env OMP_STACKSIZE --env OMP_THREAD_LIMIT --env OMP_WAIT_POLICY
 ################################################################################
 # Begin Experiments                                                            #
 ################################################################################
-OUTPUT_ROOT=$HOME/exp/2021-ijcai-long
+OUTPUT_ROOT=$HOME/exp/test/2021-ijcai-new
 TIME_LONG=time_setup.T20000
 DENSITY=CD1p0
 CARDINALITY=C16
-SIZEINC=I72
-SCENARIOS_LIST=(SS.16x8 DS.16x8 RN.8x8 PL.8x8)
+SIZEINC=I16
+SCENARIOS_LIST=(SS.16x8x2 DS.16x8x2 RN.8x8x2 PL.8x8x2)
 # SCENARIOS_LIST=(SS.16x8 DS.16x8)
-# SCENARIOS_LIST=(RN.8x8)
+SCENARIOS_LIST=(PL.8x8x2)
 NSIMS=32
 
 SIERRA_BASE_CMD="python3 sierra.py \
                   --sierra-root=$OUTPUT_ROOT\
-                  --template-input-file=$SIERRA_ROOT/templates/2021-modeling.argos \
+                  --template-input-file=$SIERRA_ROOT/templates/2021-ijcai.argos \
                   --n-sims=$NSIMS\
                   --controller=d0.CRW\
                   --project=fordyca\
                   --log-level=INFO\
                   --pipeline 4 --project-no-yaml-LN\
                   --dist-stats=conf95\
+                  --with-robot-leds\
                   --log-level=DEBUG\
                   --exp-overwrite\
                   --time-setup=${TIME_LONG}"
@@ -116,7 +117,7 @@ if [ "$TASK" == "comp" ] || [ "$TASK" == "all" ]; then
               --batch-criteria $criteria\
               --bc-univar\
               --scenario-comparison\
-              --scenarios-list=SS.16x8,DS.16x8\
+              --scenarios-list=SS.16x8x2,DS.16x8x2\
               --scenarios-legend="SS","DS"
 
     $SIERRA_CMD --scenario=$s \
@@ -124,6 +125,6 @@ if [ "$TASK" == "comp" ] || [ "$TASK" == "all" ]; then
               --batch-criteria $criteria\
               --bc-univar\
               --scenario-comparison\
-              --scenarios-list=RN.8x8,PL.8x8\
+              --scenarios-list=RN.8x8x2,PL.8x8x2\
               --scenarios-legend="RN","PL"
 fi

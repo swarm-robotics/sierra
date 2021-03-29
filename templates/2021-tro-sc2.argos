@@ -40,6 +40,8 @@
                      stddev="0"
                      mean="0"/>
         </differential_steering>
+        <colored_blob_omnidirectional_camera implementation="rot_z_only"
+                                             medium="leds" />
 
         <footbot_proximity implementation="default">
           <noise model="none"
